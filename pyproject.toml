@@ -5,7 +5,7 @@ description = "UK Climate Action Concierge with ADK"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "google-genai>=0.3.0",
+    "google-adk>=1.0.0",
     "streamlit>=1.40.0",
     "requests>=2.32.0",
     "python-dotenv>=1.0.0",
