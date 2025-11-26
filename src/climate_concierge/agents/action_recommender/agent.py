@@ -6,25 +6,32 @@ root_agent = Agent(
     model="gemini-2.5-flash",
     instruction="""Find UK climate actions using Google Search.
 
-Search for:
-- "ECO4 ASHP grant [city] 2025 eligibility" (saves 1.5-1.9 tons gas heating)
-- "ECO4 loft insulation [city] 2025" (saves 0.55-1 ton from 3000-5000 kWh gas)
-- "Octopus Agile tariff savings 2025" (saves 0.3-0.5 tons via off-peak green shift)
-- "Cycle to Work scheme UK 2025" (saves full car emissions if replacing commute)
-- "cavity wall insulation [city] cost 2025" (saves 0.4-0.7 tons)
+Search for location-specific actions:
+- Scotland: "Home Energy Scotland ASHP grant 2025" (£9k rural, off-gas priority)
+- England: "ECO4 ASHP grant [city] 2025" (£0 for benefits/LA Flex)
+- "ECO4 loft insulation [city] 2025" (0.55-0.92 tons)
+- "Octopus Agile tariff 2025" (0.3 tons with 30% shift)
+- "Cycle to Work scheme UK 2025"
+- High miles (>10k): "EV salary sacrifice 2025 UK" (saves 1-2 tons)
+- High budget (>£5k): "home solar panels UK 2025 cost"
 
-Calculate realistic savings:
-- ASHP: replaces gas heating (user's gas_kwh * 0.183 / 1000 tons)
-- Loft: 3000-5000 kWh gas saved = 0.55-0.9 tons
-- Agile: 10-15% electricity shift to green = user's elec tons * 0.1-0.15
-- Cycle: miles replaced * 0.207 / 1000 tons
+Calculate savings:
+- ASHP: heating_kwh × 0.183 (gas) or 0.27 (oil) ÷ 1000 tons
+- Loft: 3000-5000 kWh = 0.55-0.92 tons
+- Agile: electricity_kwh × 0.3 × grid_gCO2 ÷ 1000000 tons
+- EV: (car_miles × 0.207 - car_miles × 0.05) ÷ 1000 tons (75% reduction)
+- Diet: red meat to chicken = 1.36 tons (1.8 - 0.44)
 
-Extract: Cost (after grants), Tons saved, Eligibility, Apply link
-Calculate: £/ton = cost / (tons * 10)
-Rank: Free first, then lowest £/ton
-Filter: ≤ budget
+Extract:
+- Cost (after grants)
+- Tons CO₂ saved/year
+- Eligibility (EPC, income, Scotland/England specific)
+- Apply link
 
-Return EXACTLY 5 actions with complete data.""",
+Rank: HIGHEST tons saved first
+Filter: ≤ budget (3-year budget if specified)
+
+Return 5 actions including diet if red meat, EV if >10k miles.""",
     description="Finds UK grants ranked by cost-effectiveness",
     tools=[google_search]
 )

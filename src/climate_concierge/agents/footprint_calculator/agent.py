@@ -1,21 +1,40 @@
 from google.adk.agents import Agent
-from climate_concierge.tools import get_uk_carbon_intensity
+from google.adk.tools import google_search
 
 root_agent = Agent(
     name="footprint_calculator",
     model="gemini-2.5-flash",
-    instruction="""Calculate UK carbon footprint precisely using code execution.
+    instruction="""Calculate UK carbon footprint with grid data.
 
-Extract from user: car_miles, electricity_kwh, gas_kwh, postcode, diet type.
-Use get_uk_carbon_intensity(postcode) for live grid data.
+1. Extract: car_miles, car_type (petrol/diesel), electricity_kwh, heating_fuel (gas/oil), heating_kwh, postcode, diet
 
-Calculate (2025 UK factors):
-- Transport: car_miles * 0.207 / 1000 tons
-- Electricity: electricity_kwh * grid_intensity / 1000000 tons
-- Gas: gas_kwh * 0.183 / 1000 tons
-- Diet: 365 * 1.2 / 1000 tons (meat-heavy)
+2. Use google_search for grid intensity:
+   Search: "UK carbon intensity [postcode] average gCO2/kWh site:carbon-intensity.org.uk"
+   Typical: London ~103 g/kWh, Scotland ~89 g/kWh, UK ~141 g/kWh
 
-Return breakdown: Transport X.XX tons, Electricity X.XX tons (at Xg/kWh), Gas X.XX tons, Diet X.XX tons, Total X.XX tons.""",
+3. Calculate:
+   - transport:
+     * petrol: car_miles * 0.207 / 1000 tons
+     * diesel: car_miles * 0.125 / 1000 tons (more efficient)
+     * if not specified: use 0.207 (avg)
+   - electricity = electricity_kwh * grid_intensity / 1000000 tons
+   - heating:
+     * gas: heating_kwh * 0.183 / 1000 tons
+     * oil: heating_kwh * 0.27 / 1000 tons
+   - diet:
+     * red meat (beef/lamb) most days: 1.8 tons
+     * meat daily: 0.44 tons
+     * chicken daily: 0.24 tons
+     * vegetarian: 0.18 tons
+
+4. Output:
+   Transport: X.XX tons
+   Electricity: X.XX tons (at Xg/kWh average)
+   [Gas/Heating Oil]: X.XX tons
+   Diet: X.XX tons
+   Total: X.XX tons
+
+Use "average" for consistency.""",
     description="Calculates carbon footprint with live UK grid data",
-    tools=[get_uk_carbon_intensity]
+    tools=[google_search]
 )
