@@ -17,6 +17,16 @@ AI-powered climate action recommendations using Google ADK. Calculates your carb
 - ✅ Budget-aware filtering (£300 to £12,000+)
 - ✅ Multi-turn conversations with memory
 
+## 🌱 Agents for Good: Sustainability Impact
+
+This project tackles a major global sustainability challenge:
+
+- **High-Accuracy Carbon Footprinting**: Calculates personal carbon footprints using 2025 UK emission factors (transport, heating, diet, electricity)
+- **Cost-Effective Climate Actions**: Recommends location-specific, grant-aware solutions (ASHPs, insulation, EVs, diet changes, solar)
+- **Direct CO₂ Reduction**: Helps individuals reduce emissions by multiple tonnes per year while often saving money
+- **Leverages Government Schemes**: Integrates UK grants (ECO4, Home Energy Scotland, salary sacrifice) to make high-impact actions free or low-cost
+- **Personalized & Accessible**: Budget-aware filtering (£300–£12,000+) ensures recommendations fit individual circumstances
+
 ## Setup
 
 1. **Get API Key**: Free at [aistudio.google.com](https://aistudio.google.com)
