@@ -217,7 +217,7 @@ wheels = [
 ]
 
 [[package]]
-name = "climate-action-concierge-copy"
+name = "climate-action-concierge"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

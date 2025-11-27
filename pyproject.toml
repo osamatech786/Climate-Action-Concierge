@@ -1,5 +1,5 @@
 [project]
-name = "climate-action-concierge-copy"
+name = "climate-action-concierge"
 version = "0.1.0"
 description = "UK Climate Action Concierge with ADK"
 readme = "README.md"
