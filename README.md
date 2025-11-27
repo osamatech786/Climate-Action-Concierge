@@ -279,3 +279,6 @@ Streamlit UI + InMemorySessionService for multi-turn conversations.
   - Diet actions (red meat → chicken saves 1.36 tons)
   - EV recommendations for high mileage (>10k miles)
 - **Budget-Aware**: £300-£12,000+ budgets, ranks by CO₂ impact
+
+  
+Kaggle Writeup link: https://kaggle.com/competitions/agents-intensive-capstone-project/writeups/uk-climate-action-concierge
