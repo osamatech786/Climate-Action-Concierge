@@ -1,8 +1,24 @@
-***Track: Agents for Good***
-
 # 🌍 UK Climate Action Concierge
 
+**Track:** Agents for Good
+
 AI-powered climate action recommendations using Google ADK. Calculates your carbon footprint and finds UK-specific grants, tariffs, and actions ranked by cost-effectiveness.
+
+## Problem Statement
+
+The average UK person emits ~10–12 tonnes of CO₂e per year. Most have no accurate idea of their own footprint, which levers actually move the needle, or that — right now, until March 2026 — the UK government is literally paying people thousands of pounds to install heat pumps, insulation, and other high-impact upgrades via ECO4, Home Energy Scotland, GBIS, and rural uplifts.
+
+Result: millions of tonnes of completely avoidable emissions and billions in wasted energy bills every single year.
+
+## Why Agents (and only agents) Solve This
+
+This is a classic multi-step, tool-heavy, real-world reasoning problem that static prompts or single LLMs cannot reliably solve:
+- Need live data (grid intensity by postcode, latest grant rules)
+- Need web search across dozens of government sites that change monthly
+- Need precise maths (£/tonne, payback, SCOP-adjusted heat-pump savings)
+- Need strict execution order and separation of concerns
+
+→ A multi-agent system with specialised roles and tools is the only architecture that delivers consistent, postcode-perfect, grant-aware answers at scale.
 
 ## Features
 - ✅ Live UK grid carbon intensity (postcode-specific: 48-192 g/kWh)
@@ -63,7 +79,7 @@ This is the first agent that makes reaching household net-zero not just possible
 
 4. **Enter API key** in the sidebar and start chatting!
 
-## Example Query
+## Example Queries
 
 ```
 I drive 5000 miles/year, eat meat daily, use 3000 kWh electricity and 12000 kWh gas, 
@@ -208,6 +224,27 @@ Total: 8.38 tons/year (UK avg: 10 tons)
 | **Google Search** | Gemini built-in | Google | Free | Find latest grants, tariffs, schemes |
 | **UK Carbon Intensity API** | Custom REST API | carbon-intensity.org.uk | Free | Live grid carbon intensity by postcode |
 
+
+## What I Built – Architecture
+
+A SequentialAgent pipeline using Google ADK + Gemini 2.5 Flash:
+
+1. **FootprintCalculatorAgent** → live UK grid intensity + 2025 emission factors (diesel, oil, red meat, etc.)
+2. **ActionRecommenderAgent** → Google Search + reasoning to discover every relevant grant/tariff for that postcode & budget
+3. **ActionRanker** (inside #2) → scores by £/tonne saved over 10 years
+4. **ResponseFormatterAgent** → beautiful, actionable markdown with phone numbers and direct apply links
+
+Streamlit UI + InMemorySessionService for multi-turn conversations.
+
+
+### Technical Stack
+- **Framework**: Google ADK (Agent Development Kit)
+- **LLM**: Gemini 2.5 Flash (fast, supports tools, 1M context)  & Gemini 2.5 Flash Lite for less complex tasks
+- **UI**: Streamlit (interactive web chat)
+- **Session**: InMemorySessionService (multi-turn conversations)
+- **Language**: Python 3.13
+- **Package Manager**: uv
+
 ### Why This Architecture?
 
 1. **SequentialAgent**: Enforces execution order (footprint → actions → format)
@@ -216,13 +253,18 @@ Total: 8.38 tons/year (UK avg: 10 tons)
 4. **Accuracy**: Live UK grid data + realistic savings calculations
 5. **Scalability**: Easy to add new agents or swap orchestration (Parallel, Loop), (e.g., TransportAgent for EV recommendations)
 
-### Technical Stack
-- **Framework**: Google ADK (Agent Development Kit)
-- **LLM**: Gemini 2.5 Flash (fast, supports tools, 1M context) & Gemini 2.5 Flash Lite for less complex tasks
-- **UI**: Streamlit (interactive web chat)
-- **Session**: InMemorySessionService (multi-turn conversations)
-- **Language**: Python 3.13
-- **Package Manager**: uv
+### Technical Highlights
+- Live regional grid intensity (48–192 g/kWh) via carbon-intensity.org.uk
+- Correct handling of heating oil (0.27 kg/kWh), diesel (0.125 kg/mile), red-meat diets (~1.8 t/yr)
+- Scotland rural uplift detection (£9k ASHP grants)
+- EV salary-sacrifice maths, Octopus Agile shifting, solar payback in Scotland
+- All built with pure Google ADK, Gemini 2.5 Flash, Streamlit, and uv
+
+### If I Had More Time
+- ParallelAgent for simultaneous England/Scotland/Wales grant lookup
+- Dedicated TransportAgent with real-time used-EV pricing
+- Integration with EPC register API for auto-eligibility checks
+- Deploy as public web app so anyone in the UK can get their free net-zero plan today
 
 ### Performance
 - **Score**: 9.5/10 (capstone-ready)
