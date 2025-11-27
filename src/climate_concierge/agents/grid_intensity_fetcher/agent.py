@@ -3,7 +3,7 @@ from climate_concierge.tools import get_uk_carbon_intensity
 
 root_agent = Agent(
     name="grid_intensity_fetcher",
-    model="gemini-2.5-flash",
+    model="gemini-2.5-flash-lite",
     instruction="""You ONLY fetch UK grid carbon intensity. 
 
 When given a postcode, ALWAYS call get_uk_carbon_intensity(postcode) and return ONLY the gCO2_per_kWh value as a number.
